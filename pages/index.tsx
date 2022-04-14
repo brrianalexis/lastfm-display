@@ -43,6 +43,12 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
                 font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
               }
 
+              @media (prefers-color-scheme: dark) {
+                .currentStatus {
+                  color: #ffffff;
+                }
+              }
+
               .main {
                 margin-top: 40px;
                 display: flex;
