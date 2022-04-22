@@ -14,11 +14,10 @@ const Home: NextPage = () => {
 
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   const { data } = await axios.get(
-    `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&user=BrianRomeo&api_key=${process.env.LASTFM_API_KEY}&format=json`
+    `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&user=${process.env.LASTFM_USERNAME}&api_key=${process.env.LASTFM_API_KEY}&format=json`
   );
 
   const lastTrack = data.recenttracks.track[0];
-  console.log(lastTrack.image);
   const xlImage = lastTrack.image.find(
     (image: any) => image.size === 'extralarge'
   )['#text'];
