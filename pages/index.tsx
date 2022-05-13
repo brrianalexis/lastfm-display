@@ -12,17 +12,60 @@ const Home: NextPage = () => {
   );
 };
 
+type TrackImage = {
+  size: string;
+  '#text': string;
+};
+
+type TrackAlbum = {
+  mbid: string;
+  '#text': string;
+};
+
+type Track = {
+  artist: {
+    mbid: string;
+    '#text': string;
+  };
+  streamable: string;
+  image: TrackImage[];
+  mbid: string;
+  album: TrackAlbum;
+  name: string;
+  url: string;
+  date: {
+    uts: string;
+    '#text': string;
+  };
+};
+
+type Attributes = {
+  user: string;
+  totalPages: string;
+  page: string;
+  perPage: string;
+  total: string;
+};
+
+type RecentTracksAPIResponse = {
+  recenttracks: {
+    track: Track[];
+    '@attr': Attributes;
+  };
+};
+
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
-  const { data } = await axios.get(
+  const { data } = await axios.get<RecentTracksAPIResponse>(
     `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&user=${process.env.LASTFM_USERNAME}&api_key=${process.env.LASTFM_API_KEY}&format=json`
   );
 
   const lastTrack = data.recenttracks.track[0];
-  const xlImage = lastTrack.image.find(
-    (image: any) => image.size === 'extralarge'
+  const xlImage = (
+    lastTrack.image.find(image => image.size === 'extralarge') as TrackImage
   )['#text'];
 
   const image = await axios.get(xlImage, { responseType: 'arraybuffer' });
+
   const raw = Buffer.from(image.data).toString('base64');
   const encodedImage = `data:${image.headers['content-type']};base64,${raw}`;
 
