@@ -63,7 +63,7 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   );
 
   const lastTrack = data.recenttracks.track[0];
-  console.log(lastTrack);
+
   const xlImage = (
     lastTrack.image.find(image => image.size === 'extralarge') as TrackImage
   )['#text'];
