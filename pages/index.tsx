@@ -55,8 +55,6 @@ type RecentTracksAPIResponse = {
   };
 };
 
-//TODO    reemplazar todas las ocurrencias de '&' con '&amp;'
-
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   const { data } = await axios.get<RecentTracksAPIResponse>(
     `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&user=${process.env.LASTFM_USERNAME}&api_key=${process.env.LASTFM_API_KEY}&format=json`
