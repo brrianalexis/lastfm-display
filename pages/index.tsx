@@ -1,6 +1,7 @@
 import type { NextPage, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import axios from 'axios';
+import { escapeAmpersands } from '../utils';
 
 const Home: NextPage = () => {
   return (
@@ -54,12 +55,15 @@ type RecentTracksAPIResponse = {
   };
 };
 
+//TODO    reemplazar todas las ocurrencias de '&' con '&amp;'
+
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   const { data } = await axios.get<RecentTracksAPIResponse>(
     `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&user=${process.env.LASTFM_USERNAME}&api_key=${process.env.LASTFM_API_KEY}&format=json`
   );
 
   const lastTrack = data.recenttracks.track[0];
+  console.log(lastTrack);
   const xlImage = (
     lastTrack.image.find(image => image.size === 'extralarge') as TrackImage
   )['#text'];
@@ -181,16 +185,20 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
                   <img
                     src="${encodedImage}"
                     class="cover"
-                    alt="${lastTrack.album['#text']} by ${lastTrack.artist['#text']} album cover"
+                    alt="${escapeAmpersands(
+                      lastTrack.album['#text']
+                    )} by ${escapeAmpersands(
+    lastTrack.artist['#text']
+  )} album cover"
                   />
                 </center>
               </a>
               <div class="content">
                 <div class="song">
-                  ${lastTrack.name}
+                  ${escapeAmpersands(lastTrack.name)}
                 </div>
                 <div class="artist">
-                  ${lastTrack.artist['#text']}
+                  ${escapeAmpersands(lastTrack.artist['#text'])}
                 </div>
                 <div id="bars">
                   <div class="bar"></div>
