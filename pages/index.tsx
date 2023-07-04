@@ -1,7 +1,8 @@
 import type { NextPage, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import axios from 'axios';
-import { escapeAmpersands } from '../utils';
+
+import { escapeForbiddenCharacters } from '../utils';
 
 const Home: NextPage = () => {
   return (
@@ -70,6 +71,10 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
 
   const raw = Buffer.from(image.data).toString('base64');
   const encodedImage = `data:${image.headers['content-type']};base64,${raw}`;
+
+  const albumTitle = escapeForbiddenCharacters(lastTrack.album['#text']);
+  const artistName = escapeForbiddenCharacters(lastTrack.artist['#text']);
+  const trackName = escapeForbiddenCharacters(lastTrack.name);
 
   res.setHeader('Content-Type', 'image/svg+xml');
   res.write(`
@@ -183,20 +188,16 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
                   <img
                     src="${encodedImage}"
                     class="cover"
-                    alt="${escapeAmpersands(
-                      lastTrack.album['#text']
-                    )} by ${escapeAmpersands(
-    lastTrack.artist['#text']
-  )} album cover"
+                    alt="${albumTitle} by ${artistName} album cover"
                   />
                 </center>
               </a>
               <div class="content">
                 <div class="song">
-                  ${escapeAmpersands(lastTrack.name)}
+                  ${trackName}
                 </div>
                 <div class="artist">
-                  ${escapeAmpersands(lastTrack.artist['#text'])}
+                  ${artistName}
                 </div>
                 <div id="bars">
                   <div class="bar"></div>
