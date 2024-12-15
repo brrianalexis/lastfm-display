@@ -1,10 +1,9 @@
-import type { NextPage, GetServerSidePropsContext } from "next";
-import Head from "next/head";
 import axios from "axios";
+import type { GetServerSidePropsContext,NextPage } from "next";
+import Head from "next/head";
 
-import { escapeForbiddenCharacters } from "../utils";
-import { TrackImage } from "../types";
-import { RecentTracksAPIResponse } from "../types";
+import { RecentTracksAPIResponse, TrackImage } from "@/types";
+import { escapeForbiddenCharacters } from "@/utils";
 
 const Home: NextPage = () => {
   return (
