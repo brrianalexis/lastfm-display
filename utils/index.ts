@@ -1,17 +1,14 @@
-const FORBIDDEN_CHARACTERS = [
-  { character: "&", replacement: "&amp;" },
-  { character: "<", replacement: "&lt;" },
-  { character: ">", replacement: "&gt;" },
-  { character: '"', replacement: "&quot;" },
-  { character: "'", replacement: "&apos;" },
-];
+import {
+  FORBIDDEN_CHARACTERS_REGEXP,
+  FORBIDDEN_CHARACTERS_REPLACEMENT_MAP,
+} from "@/constants";
 
 export const escapeForbiddenCharacters = (str: string) => {
-  let sanitized = str;
-
-  FORBIDDEN_CHARACTERS.forEach(({ character, replacement }) => {
-    sanitized = sanitized.replace(new RegExp(character, "g"), replacement);
-  });
-
-  return sanitized;
+  return str.replace(
+    FORBIDDEN_CHARACTERS_REGEXP,
+    (match) =>
+      FORBIDDEN_CHARACTERS_REPLACEMENT_MAP[
+        match as keyof typeof FORBIDDEN_CHARACTERS_REPLACEMENT_MAP
+      ]
+  );
 };
