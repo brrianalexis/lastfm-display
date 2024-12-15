@@ -1,8 +1,10 @@
-import type { NextPage, GetServerSidePropsContext } from 'next';
-import Head from 'next/head';
-import axios from 'axios';
+import type { NextPage, GetServerSidePropsContext } from "next";
+import Head from "next/head";
+import axios from "axios";
 
-import { escapeForbiddenCharacters } from '../utils';
+import { escapeForbiddenCharacters } from "../utils";
+import { TrackImage } from "../types";
+import { RecentTracksAPIResponse } from "../types";
 
 const Home: NextPage = () => {
   return (
@@ -14,48 +16,6 @@ const Home: NextPage = () => {
   );
 };
 
-type TrackImage = {
-  size: string;
-  '#text': string;
-};
-
-type TrackAlbum = {
-  mbid: string;
-  '#text': string;
-};
-
-type Track = {
-  artist: {
-    mbid: string;
-    '#text': string;
-  };
-  streamable: string;
-  image: TrackImage[];
-  mbid: string;
-  album: TrackAlbum;
-  name: string;
-  url: string;
-  date: {
-    uts: string;
-    '#text': string;
-  };
-};
-
-type Attributes = {
-  user: string;
-  totalPages: string;
-  page: string;
-  perPage: string;
-  total: string;
-};
-
-type RecentTracksAPIResponse = {
-  recenttracks: {
-    track: Track[];
-    '@attr': Attributes;
-  };
-};
-
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   const { data } = await axios.get<RecentTracksAPIResponse>(
     `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&user=${process.env.LASTFM_USERNAME}&api_key=${process.env.LASTFM_API_KEY}&format=json`
@@ -64,19 +24,19 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   const lastTrack = data.recenttracks.track[0];
 
   const xlImage = (
-    lastTrack.image.find(image => image.size === 'extralarge') as TrackImage
-  )['#text'];
+    lastTrack.image.find((image) => image.size === "extralarge") as TrackImage
+  )["#text"];
 
-  const image = await axios.get(xlImage, { responseType: 'arraybuffer' });
+  const image = await axios.get(xlImage, { responseType: "arraybuffer" });
 
-  const raw = Buffer.from(image.data).toString('base64');
-  const encodedImage = `data:${image.headers['content-type']};base64,${raw}`;
+  const raw = Buffer.from(image.data).toString("base64");
+  const encodedImage = `data:${image.headers["content-type"]};base64,${raw}`;
 
-  const albumTitle = escapeForbiddenCharacters(lastTrack.album['#text']);
-  const artistName = escapeForbiddenCharacters(lastTrack.artist['#text']);
+  const albumTitle = escapeForbiddenCharacters(lastTrack.album["#text"]);
+  const artistName = escapeForbiddenCharacters(lastTrack.artist["#text"]);
   const trackName = escapeForbiddenCharacters(lastTrack.name);
 
-  res.setHeader('Content-Type', 'image/svg+xml');
+  res.setHeader("Content-Type", "image/svg+xml");
   res.write(`
       <svg
         fill="none"
