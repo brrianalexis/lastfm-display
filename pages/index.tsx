@@ -43,11 +43,17 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
       `${process.env.LASTFM_BASE_URL}/?method=artist.getInfo&${API_COMMON_PARAMS}&mbid=${artist.mbid}`
     );
 
-    const image = artistInfo.artist.image.find(
+    const artistImageUrl = artistInfo.artist.image.find(
       (image) => image.size === "medium"
     ) as Image;
+    const artistImage = await axios.get(artistImageUrl["#text"], {
+      responseType: "arraybuffer",
+    });
 
-    artist.image = image["#text"];
+    const rawArtistImage = Buffer.from(artistImage.data).toString("base64");
+    const encodedArtistImage = `data:${artistImage.headers["content-type"]};base64,${rawArtistImage}`;
+
+    artist.image = encodedArtistImage;
   }
 
   const lastTrack = recentTracksData.recenttracks.track[0];
