@@ -1,4 +1,4 @@
-export const SOUNDBARS = `<div id="bars">
+export const SOUNDBARS_MARKUP = `<div id="bars">
     <div class="bar"></div>
     <div class="bar"></div>
     <div class="bar"></div>
@@ -95,7 +95,7 @@ export const STYLE_TAG = `
     .container {
       display: flex;
       flex-direction: column;
-      padding: 10px;
+      padding: 8px;
       gap: 20px;
     }
 
@@ -160,18 +160,33 @@ export const STYLE_TAG = `
       align-items: center;
       padding: 8px 0;
       border-bottom: 1px solid #eaeaea;
+      gap: 12px;
     }
 
-    .artist-rank {
-      font-size: 20px;
-      width: 40px;
-      text-align: center;
+    .artist-image {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
     .artist-info {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: space-between;
       flex: 1;
+    }
+
+    .artist-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .artist-rank {
+      font-size: 20px;
+      min-width: 32px;
+      text-align: center;
     }
 
     .artist-name {

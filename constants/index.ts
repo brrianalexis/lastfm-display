@@ -1,3 +1,3 @@
 export * from "./api";
-export * from "./styles";
+export * from "./markup";
 export * from "./utils";

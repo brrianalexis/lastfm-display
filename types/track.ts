@@ -1,14 +1,11 @@
+import { Image } from "./image";
+
 export type TrackAttributes = {
   user: string;
   totalPages: string;
   page: string;
   perPage: string;
   total: string;
-};
-
-export type TrackImage = {
-  size: string;
-  "#text": string;
 };
 
 export type TrackAlbum = {
@@ -22,7 +19,7 @@ export type Track = {
     "#text": string;
   };
   streamable: string;
-  image: TrackImage[];
+  image: Image[];
   mbid: string;
   album: TrackAlbum;
   name: string;
