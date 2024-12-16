@@ -1,3 +1,11 @@
+export type TrackAttributes = {
+  user: string;
+  totalPages: string;
+  page: string;
+  perPage: string;
+  total: string;
+};
+
 export type TrackImage = {
   size: string;
   "#text": string;
