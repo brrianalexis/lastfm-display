@@ -96,7 +96,7 @@ export const STYLE_TAG = `
       display: flex;
       flex-direction: column;
       padding: 8px;
-      gap: 20px;
+      gap: 12px;
     }
 
     .now-playing-section {
@@ -106,7 +106,7 @@ export const STYLE_TAG = `
 
     .currentStatus {
       font-size: 24px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .main {
@@ -144,14 +144,13 @@ export const STYLE_TAG = `
     }
 
     .weekly-artists {
-      margin-top: 20px;
       border-top: 1px solid #eaeaea;
-      padding-top: 20px;
+      padding-top: 12px;
     }
 
     .weekly-artists-title {
       font-size: 24px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       color: #666;
     }
 
