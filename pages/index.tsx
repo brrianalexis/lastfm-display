@@ -3,13 +3,7 @@ import type { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 
 import { API_COMMON_PARAMS, SOUNDBARS_MARKUP, STYLE_TAG } from "@/constants";
-import {
-  ArtistInfoAPIResponse,
-  Image,
-  ModifiedArtist,
-  RecentTracksAPIResponse,
-  WeeklyArtistsAPIResponse,
-} from "@/types";
+import { Image, RecentTracksAPIResponse, TopArtistsAPIResponse } from "@/types";
 import { escapeForbiddenCharacters } from "@/utils";
 
 const Home: NextPage = () => {
@@ -23,38 +17,17 @@ const Home: NextPage = () => {
 };
 
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
-  const [{ data: recentTracksData }, { data: weeklyArtistsData }] =
+  const [{ data: recentTracksData }, { data: topArtistsData }] =
     await Promise.all([
       axios.get<RecentTracksAPIResponse>(
         `${process.env.LASTFM_BASE_URL}/?method=user.getRecentTracks&${API_COMMON_PARAMS}`
       ),
-      axios.get<WeeklyArtistsAPIResponse>(
-        `${process.env.LASTFM_BASE_URL}/?method=user.getWeeklyArtistChart&${API_COMMON_PARAMS}`
+      axios.get<TopArtistsAPIResponse>(
+        `${process.env.LASTFM_BASE_URL}/?method=user.getTopArtists&period=7day&limit=5&${API_COMMON_PARAMS}`
       ),
     ]);
 
-  const topWeeklyArtists = weeklyArtistsData.weeklyartistchart.artist.slice(
-    0,
-    3
-  ) as ModifiedArtist[];
-
-  for (const artist of topWeeklyArtists) {
-    const { data: artistInfo } = await axios.get<ArtistInfoAPIResponse>(
-      `${process.env.LASTFM_BASE_URL}/?method=artist.getInfo&${API_COMMON_PARAMS}&mbid=${artist.mbid}`
-    );
-
-    const artistImageUrl = artistInfo.artist.image.find(
-      (image) => image.size === "medium"
-    ) as Image;
-    const artistImage = await axios.get(artistImageUrl["#text"], {
-      responseType: "arraybuffer",
-    });
-
-    const rawArtistImage = Buffer.from(artistImage.data).toString("base64");
-    const encodedArtistImage = `data:${artistImage.headers["content-type"]};base64,${rawArtistImage}`;
-
-    artist.image = encodedArtistImage;
-  }
+  const topWeeklyArtists = topArtistsData.topartists.artist.slice(0, 5);
 
   const lastTrack = recentTracksData.recenttracks.track[0];
 
@@ -74,8 +47,8 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   res.setHeader("Content-Type", "image/svg+xml");
 
   res.write(/*html*/ `
-    <svg fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="480" height="400">
-      <foreignObject width="480" height="400">
+    <svg fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="480" height="500">
+      <foreignObject width="480" height="500">
         <div xmlns="http://www.w3.org/1999/xhtml">
           ${STYLE_TAG}
           <div class="container">
@@ -96,16 +69,11 @@ export async function getServerSideProps({ res }: GetServerSidePropsContext) {
               <div class="weekly-artists-title">🎵 Top artists this week:</div>
               ${topWeeklyArtists
                 .map((artist, index) => {
-                  const rank = ["🥇", "🥈", "🥉"][index];
+                  const rank = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"][index];
 
                   return `
                     <div class="artist-row">
                       <div class="artist-rank">${rank}</div>
-                      <img 
-                        src="${artist.image}" 
-                        class="artist-image" 
-                        alt="${escapeForbiddenCharacters(artist.name)}"
-                      />
                       <div class="artist-info">
                         <div class="artist-name-row">
                           <div class="artist-name">

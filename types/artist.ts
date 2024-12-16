@@ -1,7 +1,11 @@
-export type WeeklyArtistsAttributes = {
-  from: string;
+import { Image } from "./image";
+
+export type TopArtistsAttributes = {
   user: string;
-  to: string;
+  totalPages: string;
+  page: string;
+  total: string;
+  perPage: string;
 };
 
 export type ArtistInfoStats = {
@@ -21,13 +25,11 @@ export type ArtistAttributes = {
 };
 
 export type Artist = {
+  streamable: string;
+  image: Image[];
   mbid: string;
   url: string;
-  name: string;
-  "@attr": ArtistAttributes;
   playcount: string;
-};
-
-export type ModifiedArtist = Artist & {
-  image: string;
+  "@attr": ArtistAttributes;
+  name: string;
 };

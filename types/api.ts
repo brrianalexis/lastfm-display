@@ -2,7 +2,7 @@ import {
   Artist,
   ArtistInfoLink,
   ArtistInfoStats,
-  WeeklyArtistsAttributes,
+  TopArtistsAttributes,
 } from "./artist";
 import { Track, TrackAttributes } from "./track";
 import { Image } from "./image";
@@ -15,10 +15,10 @@ export type RecentTracksAPIResponse = {
   };
 };
 
-export type WeeklyArtistsAPIResponse = {
-  weeklyartistchart: {
+export type TopArtistsAPIResponse = {
+  topartists: {
     artist: Artist[];
-    "@attr": WeeklyArtistsAttributes;
+    "@attr": TopArtistsAttributes;
   };
 };
 
